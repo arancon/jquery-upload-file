@@ -57,6 +57,7 @@
             onCancel: function (files, pd) {},
             onAbort: function (files, pd) {},            
             downloadCallback: false,
+            deleteConfirm: false,
             deleteCallback: false,
             afterUploadAll: false,
             serialize:true,
@@ -84,8 +85,8 @@
             downloadStr: "Download",
             customErrorKeyStr: "jquery-upload-file-error",
             showQueueDiv: false,
-            statusBarWidth: 400,
-            dragdropWidth: 400,
+            statusBarWidth: "auto",
+            dragdropWidth: "auto",
             showPreview: false,
             previewHeight: "auto",
             previewWidth: "100%",
@@ -229,8 +230,10 @@
             {
 	            pd.del.show();
     	        pd.del.click(function () {
-        	        pd.statusbar.hide().remove();
             	    var arr = [filename];
+                	if(s.deleteConfirm && ! s.deleteConfirm.call(this, arr, pd)) return;
+
+        	        pd.statusbar.hide().remove();
                 	if(s.deleteCallback) s.deleteCallback.call(this, arr, pd);
 	                obj.selectedFiles -= 1;
     	            updateFileCounter(s, obj);
@@ -810,7 +813,8 @@
                         }
                         if(s.showDelete) {
                             pd.del.show();
-                            pd.del.click(function () {
+                            pd.del.click(function () {                            	
+                            	if(s.deleteConfirm && ! s.deleteConfirm.call(this, data, pd)) return;
 		                        removeExistingFileName(obj, fileArray);
                                 pd.statusbar.hide().remove();
                                 if(s.deleteCallback) s.deleteCallback.call(this, data, pd);
